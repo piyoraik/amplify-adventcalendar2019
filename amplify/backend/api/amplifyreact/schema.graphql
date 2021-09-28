@@ -1,10 +1,15 @@
 type Todo
   @model
   # 自分が作成したItemsのみ表示できるように
-  @auth(rules: [{ allow: owner }]) {
+  @auth(rules: [{ allow: owner }])
+  @key(
+    name: "SortByName"
+    fields: ["owner", "name"]
+    queryField: "listTodosSortedByName"
+  ) {
   id: ID!
   name: String!
-  description: String!
+  owner: String
   updatedAt: AWSDateTime
   createdAt: AWSDateTime
 }

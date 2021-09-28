@@ -6,10 +6,9 @@ export const onCreateTodo = /* GraphQL */ `
     onCreateTodo(owner: $owner) {
       id
       name
-      description
+      owner
       updatedAt
       createdAt
-      owner
     }
   }
 `;
@@ -18,10 +17,9 @@ export const onUpdateTodo = /* GraphQL */ `
     onUpdateTodo(owner: $owner) {
       id
       name
-      description
+      owner
       updatedAt
       createdAt
-      owner
     }
   }
 `;
@@ -30,10 +28,9 @@ export const onDeleteTodo = /* GraphQL */ `
     onDeleteTodo(owner: $owner) {
       id
       name
-      description
+      owner
       updatedAt
       createdAt
-      owner
     }
   }
 `;

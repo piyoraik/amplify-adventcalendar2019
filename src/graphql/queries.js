@@ -6,10 +6,9 @@ export const getTodo = /* GraphQL */ `
     getTodo(id: $id) {
       id
       name
-      description
+      owner
       updatedAt
       createdAt
-      owner
     }
   }
 `;
@@ -23,10 +22,37 @@ export const listTodos = /* GraphQL */ `
       items {
         id
         name
-        description
+        owner
         updatedAt
         createdAt
+      }
+      nextToken
+    }
+  }
+`;
+export const listTodosSortedByName = /* GraphQL */ `
+  query ListTodosSortedByName(
+    $owner: String
+    $name: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelTodoFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listTodosSortedByName(
+      owner: $owner
+      name: $name
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
         owner
+        updatedAt
+        createdAt
       }
       nextToken
     }

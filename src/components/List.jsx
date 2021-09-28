@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { createTodo } from '../graphql/mutations.js'
-import { listTodos } from '../graphql/queries.js'
+import { listTodos, listTodosSortedByName } from '../graphql/queries.js'
 import { onCreateTodo } from '../graphql/subscriptions.js'
 
 const QUERY = 'QUERY'
@@ -25,7 +25,6 @@ const reducer = (state, action) => {
 async function createNewTodo() {
   const todo = {
     name: 'Todo ' + Math.floor(Math.random() * 10),
-    description: '(「・ω・)「がおー',
   }
   await API.graphql(graphqlOperation(createTodo, { input: todo }))
 }
@@ -36,8 +35,13 @@ export default function List(props) {
 
   useEffect(() => {
     async function getData() {
-      const todoData = await API.graphql(graphqlOperation(listTodos))
-      dispatch({ type: QUERY, todos: todoData.data.listTodos.items })
+      const todoData = await API.graphql(
+        graphqlOperation(listTodosSortedByName, { owner: user.username })
+      )
+      dispatch({
+        type: QUERY,
+        todos: todoData.data.listTodosSortedByName.items,
+      })
     }
     getData()
 
@@ -46,12 +50,11 @@ export default function List(props) {
     ).subscribe({
       next: (eventData) => {
         const todo = eventData.value.data.onCreateTodo
-        console.log(todo)
         dispatch({ type: SUBSCRIPTION, todo })
       },
     })
     return () => subscription.unsubscribe()
-  }, [])
+  }, [user])
 
   return (
     <>
@@ -62,7 +65,7 @@ export default function List(props) {
         {state.todos?.length > 0 ? (
           state.todos.map((todo) => (
             <p key={todo.id}>
-              {todo.name} {todo.description} ({todo.createdAt})
+              {todo.name} ({todo.createdAt})
             </p>
           ))
         ) : (

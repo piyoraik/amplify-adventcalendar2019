@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { Container } from '@material-ui/core'
 
 import { Auth } from 'aws-amplify'
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components'
-import './App.css'
 
 import List from './components/List'
 import Login from './components/Login.jsx'
@@ -25,13 +25,13 @@ function App() {
   }, [])
 
   return (
-    <div className="App">
+    <Container maxWidth="md">
       {authState === AuthState.SignedIn && user ? (
         <List user={user} signOut={signOut} />
       ) : (
         <Login />
       )}
-    </div>
+    </Container>
   )
 }
 

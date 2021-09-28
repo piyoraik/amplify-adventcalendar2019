@@ -1,8 +1,11 @@
 import React, { useEffect, useReducer } from 'react'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { createTodo } from '../graphql/mutations.js'
-import { listTodos, listTodosSortedByName } from '../graphql/queries.js'
+
+import { Paper, Button, Grid } from '@material-ui/core'
+import { listTodosSortedByUpdatedAt } from '../graphql/queries.js'
 import { onCreateTodo } from '../graphql/subscriptions.js'
+
+import Form from './Form.jsx'
 
 const QUERY = 'QUERY'
 const SUBSCRIPTION = 'SUBSCRIPTION'
@@ -16,17 +19,10 @@ const reducer = (state, action) => {
     case QUERY:
       return { ...state, todos: action.todos }
     case SUBSCRIPTION:
-      return { ...state, todos: [...state.todos, action.todo] }
+      return { ...state, todos: [action.todo, ...state.todos] }
     default:
       return state
   }
-}
-
-async function createNewTodo() {
-  const todo = {
-    name: 'Todo ' + Math.floor(Math.random() * 10),
-  }
-  await API.graphql(graphqlOperation(createTodo, { input: todo }))
 }
 
 export default function List(props) {
@@ -36,11 +32,14 @@ export default function List(props) {
   useEffect(() => {
     async function getData() {
       const todoData = await API.graphql(
-        graphqlOperation(listTodosSortedByName, { owner: user.username })
+        graphqlOperation(listTodosSortedByUpdatedAt, {
+          owner: user.username,
+          sortDirection: 'DESC',
+        })
       )
       dispatch({
         type: QUERY,
-        todos: todoData.data.listTodosSortedByName.items,
+        todos: todoData.data.listTodosSortedByUpdatedAt.items,
       })
     }
     getData()
@@ -49,29 +48,38 @@ export default function List(props) {
       graphqlOperation(onCreateTodo, { owner: user.username })
     ).subscribe({
       next: (eventData) => {
+        console.log(eventData)
         const todo = eventData.value.data.onCreateTodo
         dispatch({ type: SUBSCRIPTION, todo })
       },
     })
     return () => subscription.unsubscribe()
-  }, [user])
+  }, [])
 
   return (
-    <>
-      <p>user: {user.username}</p>
-      <button onClick={signOut}>Sign out</button>
-      <button onClick={createNewTodo}>Add Todo</button>
-      <div>
+    <Grid container>
+      <Grid item style={{ width: '100%' }}>
+        <p>user: {user.username}</p>
+        <Form />
         {state.todos?.length > 0 ? (
           state.todos.map((todo) => (
-            <p key={todo.id}>
+            <Paper
+              style={{
+                width: '100%',
+                minHeight: 128,
+                padding: 8,
+                marginTop: 16,
+              }}
+              elevation={1}
+              key={todo.id}
+            >
               {todo.name} ({todo.createdAt})
-            </p>
+            </Paper>
           ))
         ) : (
           <p>Add some todos!</p>
         )}
-      </div>
-    </>
+      </Grid>
+    </Grid>
   )
 }

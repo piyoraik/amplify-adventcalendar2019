@@ -30,18 +30,18 @@ export const listTodos = /* GraphQL */ `
     }
   }
 `;
-export const listTodosSortedByName = /* GraphQL */ `
-  query ListTodosSortedByName(
+export const listTodosSortedByUpdatedAt = /* GraphQL */ `
+  query ListTodosSortedByUpdatedAt(
     $owner: String
-    $name: ModelStringKeyConditionInput
+    $updatedAt: ModelStringKeyConditionInput
     $sortDirection: ModelSortDirection
     $filter: ModelTodoFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listTodosSortedByName(
+    listTodosSortedByUpdatedAt(
       owner: $owner
-      name: $name
+      updatedAt: $updatedAt
       sortDirection: $sortDirection
       filter: $filter
       limit: $limit
@@ -55,6 +55,33 @@ export const listTodosSortedByName = /* GraphQL */ `
         createdAt
       }
       nextToken
+    }
+  }
+`;
+export const searchTodos = /* GraphQL */ `
+  query SearchTodos(
+    $filter: SearchableTodoFilterInput
+    $sort: SearchableTodoSortInput
+    $limit: Int
+    $nextToken: String
+    $from: Int
+  ) {
+    searchTodos(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+    ) {
+      items {
+        id
+        name
+        owner
+        updatedAt
+        createdAt
+      }
+      nextToken
+      total
     }
   }
 `;

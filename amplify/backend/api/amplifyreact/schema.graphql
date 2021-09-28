@@ -1,12 +1,12 @@
 type Todo
   @model
-  # 自分が作成したItemsのみ表示できるように
   @auth(rules: [{ allow: owner }])
   @key(
-    name: "SortByName"
-    fields: ["owner", "name"]
-    queryField: "listTodosSortedByName"
-  ) {
+    name: "SortByUpdatedAt"
+    fields: ["owner", "updatedAt"]
+    queryField: "listTodosSortedByUpdatedAt"
+  )
+  @searchable {
   id: ID!
   name: String!
   owner: String

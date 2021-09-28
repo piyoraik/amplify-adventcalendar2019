@@ -1,4 +1,7 @@
-type Todo @model {
+type Todo
+  @model
+  # 自分が作成したItemsのみ表示できるように
+  @auth(rules: [{ allow: owner }]) {
   id: ID!
   name: String!
   description: String!

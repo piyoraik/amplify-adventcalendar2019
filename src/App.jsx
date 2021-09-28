@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Auth } from 'aws-amplify'
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components'

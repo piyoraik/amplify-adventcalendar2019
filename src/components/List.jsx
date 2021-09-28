@@ -23,7 +23,10 @@ const reducer = (state, action) => {
 }
 
 async function createNewTodo() {
-  const todo = { name: 'Todo ' + Math.floor(Math.random() * 10) }
+  const todo = {
+    name: 'Todo ' + Math.floor(Math.random() * 10),
+    description: '(「・ω・)「がおー',
+  }
   await API.graphql(graphqlOperation(createTodo, { input: todo }))
 }
 
@@ -34,30 +37,32 @@ export default function List(props) {
   useEffect(() => {
     async function getData() {
       const todoData = await API.graphql(graphqlOperation(listTodos))
-      dispatch({ type: QUERY, todos: todoData.data.listTodos.item })
+      dispatch({ type: QUERY, todos: todoData.data.listTodos.items })
     }
     getData()
 
-    const subscription = API.graphql(graphqlOperation(onCreateTodo)).subscribe({
+    const subscription = API.graphql(
+      graphqlOperation(onCreateTodo, { owner: user.username })
+    ).subscribe({
       next: (eventData) => {
         const todo = eventData.value.data.onCreateTodo
+        console.log(todo)
         dispatch({ type: SUBSCRIPTION, todo })
       },
     })
-
     return () => subscription.unsubscribe()
   }, [])
 
   return (
     <>
-      <p>user: {user.name}</p>
+      <p>user: {user.username}</p>
       <button onClick={signOut}>Sign out</button>
       <button onClick={createNewTodo}>Add Todo</button>
       <div>
         {state.todos?.length > 0 ? (
           state.todos.map((todo) => (
             <p key={todo.id}>
-              {todo.name} ({todo.createdAt})
+              {todo.name} {todo.description} ({todo.createdAt})
             </p>
           ))
         ) : (

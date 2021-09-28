@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react'
 import API, { graphqlOperation } from '@aws-amplify/api'
 
-import { Paper, Button, Grid } from '@material-ui/core'
+import { Paper, Grid } from '@material-ui/core'
 import { listTodosSortedByUpdatedAt } from '../graphql/queries.js'
 import { onCreateTodo } from '../graphql/subscriptions.js'
 

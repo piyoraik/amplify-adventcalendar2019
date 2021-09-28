@@ -5,8 +5,7 @@ import { useForm } from 'react-hook-form'
 
 import { createTodo } from '../graphql/mutations.js'
 
-export default function Form(props) {
-  const { submit } = props
+export default function Form() {
   const {
     register,
     formState: { errors },
@@ -36,8 +35,8 @@ export default function Form(props) {
             {...register('name', {
               required: { value: true, message: 'name を入力してください' },
               maxLength: {
-                value: 12,
-                message: '12文字以下で入力してください',
+                value: 25,
+                message: '25文字以下で入力してください',
               },
             })}
           />

@@ -6,6 +6,7 @@ import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components'
 
 import List from './components/List'
 import Login from './components/Login.jsx'
+import Header from './components/Header'
 
 function signOut() {
   Auth.signOut()
@@ -25,13 +26,16 @@ function App() {
   }, [])
 
   return (
-    <Container maxWidth="md">
-      {authState === AuthState.SignedIn && user ? (
-        <List user={user} signOut={signOut} />
-      ) : (
-        <Login />
-      )}
-    </Container>
+    <>
+      <Header />
+      <Container maxWidth="md">
+        {authState === AuthState.SignedIn && user ? (
+          <List user={user} signOut={signOut} />
+        ) : (
+          <Login />
+        )}
+      </Container>
+    </>
   )
 }
 
